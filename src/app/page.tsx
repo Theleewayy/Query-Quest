@@ -14,6 +14,7 @@ import { ManualSidebar } from "@/components/ManualSidebar";
 import { LEVELS } from "@/data/levels";
 import { QueryResult, useSqlEngine } from "@/hooks/useSqlEngine";
 import { useBuzz } from "@/hooks/useBuzz";
+import { analyzeQueryError, analyzeEmptyResult } from "@/utils/queryAnalyzer";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -164,6 +165,7 @@ export default function QueryQuestPage() {
     }
 
     if (!("error" in execution)) {
+      // Check if results match the target
       if (resultsMatch(execution, currentLevel.targetResult)) {
         const justCompletedLevelNumber = currentLevel.id;
 
@@ -179,17 +181,37 @@ export default function QueryQuestPage() {
           const nextIndex = currentLevelIndex + 1;
           setMaxUnlockedLevel(nextIndex);
           setCurrentLevelIndex(nextIndex);
-          setTimer(75); // Reset timer to fixed 75s
+          setTimer(75);
 
-          // Reset terminal for next level
           setTimeout(() => {
             setResult(null);
             setQueryError(null);
             setQuery("-- Level Complete! System purging cache... \n-- Awaiting next command.");
           }, 1500);
         } else if (currentLevelIndex === LEVELS.length - 1) {
-          // Final level completed - show mission success modal
           setIsMissionComplete(true);
+        }
+      } else {
+        // Query executed but results don't match - provide intelligent hint
+        if (currentLevel.expectedQuery) {
+          const analysis = analyzeQueryError(query, currentLevel.expectedQuery);
+          setToast({
+            message: analysis.hint,
+            type: "info",
+          });
+        } else if (execution.rows.length === 0) {
+          // No expected query defined, but results are empty
+          const emptyHint = analyzeEmptyResult(query);
+          setToast({
+            message: emptyHint,
+            type: "info",
+          });
+        } else {
+          // Results don't match but we have data
+          setToast({
+            message: "INCORRECT RESULT :: Your query returned data, but it doesn't match the expected output. Review the mission parameters.",
+            type: "info",
+          });
         }
       }
     }
