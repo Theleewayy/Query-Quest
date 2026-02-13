@@ -1,26 +1,243 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #33ff33;
+  --scanline-color: rgba(0, 0, 0, 0.5);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-vt323: var(--font-vt323);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-vt323), monospace;
+  overflow-y: auto;
+  /* Force scrolling */
+}
+
+html {
+  overflow-y: auto;
+}
+
+/* CRT Scanline Effect */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  /* Fixed so it stays on screen while scrolling */
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(90deg,
+      rgba(255, 0, 0, 0.06),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.06));
+  z-index: 9999;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Screen Flicker Animation */
+@keyframes flicker {
+  0% {
+    opacity: 0.97;
+  }
+
+  5% {
+    opacity: 0.95;
+  }
+
+  10% {
+    opacity: 0.9;
+  }
+
+  15% {
+    opacity: 0.95;
+  }
+
+  20% {
+    opacity: 0.99;
+  }
+
+  25% {
+    opacity: 0.95;
+  }
+
+  30% {
+    opacity: 0.9;
+  }
+
+  35% {
+    opacity: 0.96;
+  }
+
+  40% {
+    opacity: 0.98;
+  }
+
+  45% {
+    opacity: 0.95;
+  }
+
+  50% {
+    opacity: 0.99;
+  }
+
+  55% {
+    opacity: 0.93;
+  }
+
+  60% {
+    opacity: 0.9;
+  }
+
+  65% {
+    opacity: 0.96;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0.97;
+  }
+
+  80% {
+    opacity: 0.95;
+  }
+
+  85% {
+    opacity: 0.92;
+  }
+
+  90% {
+    opacity: 0.98;
+  }
+
+  95% {
+    opacity: 0.95;
+  }
+
+  100% {
+    opacity: 0.97;
+  }
+}
+
+.crt-flicker {
+  animation: flicker 0.15s infinite;
+}
+
+/* Scrollbar styling for retro look */
+::-webkit-scrollbar {
+  width: 12px;
+  background-color: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #33ff33;
+  border: 2px solid #000;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #111;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  10% {
+    transform: translate(-5px, -5px) rotate(-1deg);
+  }
+
+  20% {
+    transform: translate(5px, 5px) rotate(1deg);
+  }
+
+  30% {
+    transform: translate(-5px, 5px) rotate(0deg);
+  }
+
+  40% {
+    transform: translate(5px, -5px) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-5px, -5px) rotate(-1deg);
+  }
+
+  60% {
+    transform: transform(5px, 5px) rotate(0deg);
+  }
+
+  70% {
+    transform: translate(-5px, 5px) rotate(-1deg);
+  }
+
+  80% {
+    transform: translate(5px, -5px) rotate(1deg);
+  }
+
+  90% {
+    transform: translate(-5px, -5px) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+.shake {
+  animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes red-flash {
+
+  0%,
+  100% {
+    background-color: transparent;
+  }
+
+  50% {
+    background-color: rgba(255, 0, 0, 0.4);
+  }
+}
+
+.red-flash {
+  animation: red-flash 0.5s ease-in-out;
+}
+
+/* Easter Egg: Antigravity Mode */
+@keyframes float-up {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100vh) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+.float-up {
+  animation: float-up 10s ease-in forwards;
+}
+
+.antigravity-mode {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: white !important;
+  color: black !important;
+  overflow: hidden !important;
+  /* Prevent scroll bars during float */
 }

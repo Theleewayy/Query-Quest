@@ -1,0 +1,13 @@
+
+> sql-trainer@0.1.0 lint
+> eslint --quiet
+
+
+C:\Users\WAHAB\OneDrive\Desktop\projects\sql-trainer\public\sql-wasm.js
+   85:17   error  Unexpected aliasing of 'this' to local variable  @typescript-eslint/no-this-alias
+   95:15   error  A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+  103:125  error  A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+  116:279  error  Unexpected aliasing of 'this' to local variable  @typescript-eslint/no-this-alias
+
+✖ 4 problems (4 errors, 0 warnings)
+
