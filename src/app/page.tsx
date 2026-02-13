@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { ResultsTable } from "@/components/ResultsTable";
 import { IntroModal } from "@/components/IntroModal";
 import { SystemFailureModal } from "@/components/SystemFailureModal";
+import { MissionSuccessModal } from "@/components/MissionSuccessModal";
 import { ProgressBar } from "@/components/ProgressBar";
 import { Sidekick, SidekickStatus } from "@/components/Sidekick";
 import { ManualSidebar } from "@/components/ManualSidebar";
@@ -77,6 +78,7 @@ export default function QueryQuestPage() {
   const [gameStarted, setGameStarted] = useState(false);
   const [isAntigravity, setIsAntigravity] = useState(false);
   const [isManualOpen, setIsManualOpen] = useState(false);
+  const [isMissionComplete, setIsMissionComplete] = useState(false);
 
   const { ready, loading, error: engineError, executeQuery, resetDatabase } =
     useSqlEngine();
@@ -134,6 +136,18 @@ export default function QueryQuestPage() {
     resetDatabase();
   };
 
+  const handleMissionRestart = () => {
+    setIsMissionComplete(false);
+    setGameStarted(false);
+    setTimer(75);
+    setQuery(INITIAL_SQL);
+    setResult(null);
+    setQueryError(null);
+    setCurrentLevelIndex(0);
+    setMaxUnlockedLevel(0);
+    resetDatabase();
+  };
+
   const handleRun = async () => {
     setIsRunning(true);
     setQueryError(null);
@@ -174,10 +188,8 @@ export default function QueryQuestPage() {
             setQuery("-- Level Complete! System purging cache... \n-- Awaiting next command.");
           }, 1500);
         } else if (currentLevelIndex === LEVELS.length - 1) {
-          setToast({
-            message: "PROTOCOL ANTIGRAVITY NEUTRALIZED. MISSION SUCCESS.",
-            type: "success",
-          });
+          // Final level completed - show mission success modal
+          setIsMissionComplete(true);
         }
       }
     }
@@ -279,6 +291,7 @@ export default function QueryQuestPage() {
 
       <IntroModal onBegin={handleBeginGame} />
       {isSystemFailure && <SystemFailureModal onRetry={handleRetry} />}
+      {isMissionComplete && <MissionSuccessModal onRestart={handleMissionRestart} />}
 
       <div className={`flex-1 flex flex-col ${isAntigravity ? "float-up" : ""}`}>
         <header className="flex items-center gap-3 border-b-2 border-green-800 bg-black px-6 py-4 relative z-40">
