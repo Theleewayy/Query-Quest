@@ -11,6 +11,7 @@ import { MissionSuccessModal } from "@/components/MissionSuccessModal";
 import { ProgressBar } from "@/components/ProgressBar";
 import { Sidekick, SidekickStatus } from "@/components/Sidekick";
 import { ManualSidebar } from "@/components/ManualSidebar";
+import { StationHealthGauge } from "@/components/StationHealthGauge";
 import { LEVELS } from "@/data/levels";
 import { QueryResult, useSqlEngine } from "@/hooks/useSqlEngine";
 import { useBuzz } from "@/hooks/useBuzz";
@@ -336,13 +337,21 @@ export default function QueryQuestPage() {
             </div>
           </div>
 
+          {/* System Health Gauge */}
+          <div className="ml-auto mr-4 w-48">
+            <StationHealthGauge
+              value={Math.round((timer / 75) * 100)}
+              label="System Power"
+            />
+          </div>
+
           <div className="absolute left-1/2 -translate-x-1/2 rounded border-2 border-green-600 bg-black px-4 py-1 text-2xl font-bold tracking-widest text-green-500">
             <span className={timer < 15 ? "text-red-500 animate-pulse" : ""}>
               T-{Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, "0")}
             </span>
           </div>
 
-          <div className="ml-auto text-xs font-bold tracking-wider text-green-600">
+          <div className="text-xs font-bold tracking-wider text-green-600">
             {loading ? (
               <span className="animate-pulse">BOOTING SQL KERNEL...</span>
             ) : ready ? (
