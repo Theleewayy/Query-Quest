@@ -16,6 +16,7 @@ import { LEVELS } from "@/data/levels";
 import { QueryResult, useSqlEngine } from "@/hooks/useSqlEngine";
 import { useBuzz } from "@/hooks/useBuzz";
 import { analyzeQueryError, analyzeEmptyResult } from "@/utils/queryAnalyzer";
+import { useGravityFailure } from "@/hooks/useGravityFailure";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -81,12 +82,16 @@ export default function QueryQuestPage() {
   const [isAntigravity, setIsAntigravity] = useState(false);
   const [isManualOpen, setIsManualOpen] = useState(false);
   const [isMissionComplete, setIsMissionComplete] = useState(false);
+  const [gravityFailure, setGravityFailure] = useState(false);
 
   const { ready, loading, error: engineError, executeQuery, resetDatabase } =
     useSqlEngine();
 
   const playBuzz = useBuzz();
   const currentLevel = LEVELS[currentLevelIndex];
+
+  // Trigger gravity failure effect when mission is complete
+  useGravityFailure(gravityFailure);
 
   // Calculate pressure fade (starts at 0, increases as timer drops below 5s)
   const pressureOpacity = timer < 5 ? (5 - timer) / 5 : 0; // Max opacity 1.0 at 0s
@@ -191,6 +196,8 @@ export default function QueryQuestPage() {
           }, 1500);
         } else if (currentLevelIndex === LEVELS.length - 1) {
           setIsMissionComplete(true);
+          // Trigger gravity failure effect
+          setTimeout(() => setGravityFailure(true), 1000);
         }
       } else {
         // Query executed but results don't match - provide intelligent hint
@@ -364,7 +371,7 @@ export default function QueryQuestPage() {
 
         <main className="flex flex-1 flex-col gap-4 p-4 lg:flex-row relative z-40">
           {/* Mission Panel with Overflow */}
-          <section className="flex w-full flex-col border-2 border-green-800 bg-black p-4 lg:w-1/3 shadow-[0_0_10px_rgba(0,255,0,0.05)] overflow-y-auto max-h-[40vh] lg:max-h-[calc(100vh-120px)]">
+          <section className="floating-ui flex w-full flex-col border-2 border-green-800 bg-black p-4 lg:w-1/3 shadow-[0_0_10px_rgba(0,255,0,0.05)] overflow-y-auto max-h-[40vh] lg:max-h-[calc(100vh-120px)]">
             <div className="mb-4 flex items-center justify-between gap-2 border-b border-green-900 pb-2">
               <div>
                 <h2 className="text-sm font-bold text-green-300 uppercase tracking-wider">
@@ -412,7 +419,7 @@ export default function QueryQuestPage() {
             <Sidekick status={sidekickStatus} />
           </section>
 
-          <section className="flex w-full flex-1 flex-col gap-4 lg:w-2/3">
+          <section className="floating-ui flex w-full flex-1 flex-col gap-4 lg:w-2/3">
             <div className={`flex min-h-[300px] flex-1 flex-col border-2 border-green-600 bg-black shadow-[0_0_15px_rgba(0,255,0,0.1)] transition-colors duration-200 ${queryError ? "border-red-500 shadow-[0_0_20px_rgba(255,0,0,0.5)]" : ""}`}>
               {/* Editor Toolbar with Overflow */}
               <div className="flex items-center justify-between gap-2 border-b border-green-800 bg-green-950/20 px-4 py-2 text-xs text-green-500 overflow-x-auto">
