@@ -275,6 +275,12 @@ export default function QueryQuestPage() {
 
       <div className={`pointer-events-none fixed inset-0 z-40 transition-colors duration-100 ${flash ? "bg-red-500/20" : "bg-transparent"}`} />
 
+      {/* Critical Timer Blink - Last 5 seconds */}
+      {timer > 0 && timer <= 5 && (
+        <div className="pointer-events-none fixed inset-0 z-35 bg-red-500/30 animate-pulse" />
+      )}
+
+
       {/* Pressure Fade Overlay */}
       <div
         className="pointer-events-none fixed inset-0 z-30 bg-black transition-opacity duration-1000"
