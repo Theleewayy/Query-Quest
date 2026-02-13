@@ -20,7 +20,7 @@ interface SqlJsStatic {
 
 declare global {
   interface Window {
-    initSqlJs: (config: { locateFile: (file: string) => string }) => Promise<SqlJsStatic>;
+    initSqlJs?: (config: { locateFile: (file: string) => string }) => Promise<SqlJsStatic>;
   }
 }
 
