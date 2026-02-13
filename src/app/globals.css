@@ -241,3 +241,56 @@ body::before {
   overflow: hidden !important;
   /* Prevent scroll bars during float */
 }
+
+/* Glitch effect for critical gauge values */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(-2px, -2px);
+  }
+
+  60% {
+    transform: translate(2px, 2px);
+  }
+
+  80% {
+    transform: translate(2px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch-text {
+  animation: glitch 0.3s infinite;
+  text-shadow:
+    -2px 0 red,
+    2px 0 cyan;
+}
+
+.glitch-bar {
+  animation: glitch 0.2s infinite;
+}
+
+/* Scanline animation for gauge bars */
+@keyframes scan {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+.animate-scan {
+  animation: scan 2s linear infinite;
+}
