@@ -112,7 +112,7 @@ export default function QueryQuestPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [gameStarted, isSystemFailure, playBuzz]);
+  }, [gameStarted, isSystemFailure, isManualOpen, playBuzz]);
 
   const triggerErrorEffect = () => {
     setShake(true);
