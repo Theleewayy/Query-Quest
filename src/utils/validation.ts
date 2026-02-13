@@ -1,3 +1,9 @@
+type RowData = (string | number | null)[];
+
+type ValidationResult =
+    | boolean
+    | { success: false; hint: string };
+
 /**
  * Validates a query result against a target set of rows.
  * Compares arrays of objects for exact value matches.
@@ -6,7 +12,10 @@
  * @param targetRows - The expected rows for the level.
  * @returns true if they match, or a SuccessResult object with a hint if they don't.
  */
-export function validateQueryResult(actualRows, targetRows) {
+export function validateQueryResult(
+    actualRows: RowData | unknown,
+    targetRows: RowData | unknown
+): ValidationResult {
     if (!Array.isArray(actualRows) || !Array.isArray(targetRows)) {
         return {
             success: false,
