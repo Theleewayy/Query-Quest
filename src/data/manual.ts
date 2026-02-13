@@ -8,81 +8,196 @@ export type ManualEntry = {
 export const MANUAL_ENTRIES: ManualEntry[] = [
     {
         id: 1,
-        title: "The Art of Selecting Data",
-        filename: "SELECT_BASICS.LOG",
-        content: `:: SUBJECT: SELECT COMMAND ::
-:: ACCESS: GRANTED ::
+        title: "TARGETING PROTOCOLS :: Data Extraction",
+        filename: "SELECT_DIRECTIVE.LOG",
+        content: `:: MANUAL FOR PROTOCOL ANTIGRAVITY ::
+:: CLASSIFICATION: INTERNAL USE ONLY ::
+:: COMMAND: SELECT ::
 
-The SELECT statement is the foundation of data retrieval. 
-Usage: SELECT [column] FROM [table];
+The SELECT directive is your primary tool for extracting data from the station's database cores. Think of it as pointing your scanner at specific data streams within the vast information matrix.
 
-Use '*' to retrieve all columns from a data structure.
-Example: SELECT * FROM employees;
+SYNTAX:
+SELECT [column_names] FROM [table_name];
 
-Remember, Analyst: Visibility is the first step to control.`
+EXAMPLES:
+-- Retrieve specific columns from crew manifest
+SELECT name, rank, department FROM crew_manifest;
+
+-- Pull complete access logs (all columns)
+SELECT * FROM building_access_logs;
+
+ANALYST TIP: Always specify exact columns when possible. Pulling unnecessary data wastes precious processing cycles and slows down station operations.
+
+:: END TRANSMISSION ::`
     },
     {
         id: 2,
-        title: "Filtering the Void with WHERE",
-        filename: "FILTER_PROTOCOLS.LOG",
-        content: `:: SUBJECT: WHERE CLAUSE ::
-:: ACCESS: GRANTED ::
+        title: "FILTER MATRIX :: Conditional Screening",
+        filename: "WHERE_PROTOCOLS.LOG",
+        content: `:: MANUAL FOR PROTOCOL ANTIGRAVITY ::
+:: CLASSIFICATION: INTERNAL USE ONLY ::
+:: COMMAND: WHERE ::
 
-Data is noise until filtered. 
-Usage: SELECT * FROM table WHERE condition;
+The WHERE clause acts as your data filter—a critical tool for separating signal from noise in the information stream. Without WHERE, you're drowning in raw data.
 
-Conditions can check for equality (=), inequality (!=), or magnitude (<, >).
-Example: SELECT * FROM sensors WHERE reading > 100;
+SYNTAX:
+SELECT [columns] FROM [table] WHERE [condition];
 
-Filter specific values to isolate anomalies in the system.`
+OPERATORS:
+= (equals), != (not equals), < (less than), > (greater than)
+AND (both true), OR (either true)
+
+EXAMPLES:
+-- Find all denied access attempts
+SELECT * FROM building_access_logs 
+WHERE access_granted = 0;
+
+-- Locate critical radiation readings
+SELECT location, reading, timestamp 
+FROM sensor_logs 
+WHERE sensor_type = 'Radiation' AND reading > 50;
+
+WARNING: Incorrect WHERE conditions can return zero results or misleading data. Double-check your filter logic.
+
+:: END TRANSMISSION ::`
     },
     {
         id: 3,
-        title: "Ordering Chaos",
-        filename: "SORTING_ALGS.LOG",
-        content: `:: SUBJECT: ORDER BY & LIMIT ::
-:: ACCESS: GRANTED ::
+        title: "SORTING ALGORITHMS :: Data Sequencing",
+        filename: "ORDER_BY_PROC.LOG",
+        content: `:: MANUAL FOR PROTOCOL ANTIGRAVITY ::
+:: CLASSIFICATION: INTERNAL USE ONLY ::
+:: COMMAND: ORDER BY ::
 
-Perspective matters. Sort your data to see the extremes.
-Usage: ORDER BY [column] [ASC|DESC]
+ORDER BY imposes structure on chaos. Raw database output is unordered—a jumbled mess. ORDER BY lets you sort results by one or more columns, either ascending (ASC) or descending (DESC).
 
-Use LIMIT to truncate the buffer and focus on the most critical records.
-Example: SELECT * FROM logs ORDER BY priority DESC LIMIT 5;`
+SYNTAX:
+SELECT [columns] FROM [table] 
+ORDER BY [column] [ASC|DESC];
+
+EXAMPLES:
+-- List sensor readings from highest to lowest
+SELECT location, reading 
+FROM sensor_logs 
+WHERE sensor_type = 'Radiation' 
+ORDER BY reading DESC;
+
+-- Sort crew alphabetically
+SELECT name, department 
+FROM crew_manifest 
+ORDER BY name ASC;
+
+PERFORMANCE NOTE: Sorting large datasets consumes processing power. Use LIMIT to restrict output when you only need top results.
+
+:: END TRANSMISSION ::`
     },
     {
         id: 4,
-        title: "Synchronizing Data Streams",
+        title: "DATA LINKAGE :: Cross-Reference Protocols",
         filename: "JOIN_OPERATIONS.LOG",
-        content: `:: SUBJECT: JOIN OPERATIONS ::
-:: ACCESS: GRANTED ::
+        content: `:: MANUAL FOR PROTOCOL ANTIGRAVITY ::
+:: CLASSIFICATION: INTERNAL USE ONLY ::
+:: COMMAND: JOIN ::
 
-Tables are fragments of a larger truth. JOIN them to see the connection.
-Usage: FROM tableA JOIN tableB ON tableA.id = tableB.ref_id;
+JOIN is your bridge between isolated data silos. Station databases are normalized—information is split across multiple tables. JOIN reconnects these fragments using common keys.
 
-Connections reveal intent. Use them to trace actors across multiple systems.`
+SYNTAX:
+SELECT [columns] 
+FROM [table1] 
+JOIN [table2] ON [table1.key] = [table2.key];
+
+EXAMPLES:
+-- Cross-reference employee names with access logs
+SELECT e.name, e.department, a.room_name, a.access_time
+FROM employees e
+INNER JOIN building_access_logs a 
+ON e.id = a.employee_id
+WHERE a.room_name = 'Server Room A';
+
+-- Link maintenance logs to technicians
+SELECT t.name, t.shift, m.event, m.severity
+FROM technicians t
+JOIN maintenance_logs m ON t.tech_id = m.tech_id
+WHERE m.severity = 'CRITICAL';
+
+CRITICAL: Ensure your JOIN keys match in data type and value. Mismatched keys result in zero matches.
+
+:: END TRANSMISSION ::`
     },
     {
         id: 5,
-        title: "Patterns of Scale",
-        filename: "AGGREGATION_V1.LOG",
-        content: `:: SUBJECT: GROUP BY & COUNT ::
-:: ACCESS: GRANTED ::
+        title: "AGGREGATION PROCEDURES :: Statistical Analysis",
+        filename: "GROUP_BY_STATS.LOG",
+        content: `:: MANUAL FOR PROTOCOL ANTIGRAVITY ::
+:: CLASSIFICATION: INTERNAL USE ONLY ::
+:: COMMAND: GROUP BY ::
 
-Individual events are statistics in waiting. 
-Usage: SELECT category, COUNT(*) FROM table GROUP BY category;
+GROUP BY transforms raw data into intelligence summaries. Instead of viewing individual records, you collapse them into groups and perform calculations.
 
-Aggregation condenses the infinite into the actionable.`
+SYNTAX:
+SELECT [column], [aggregate_function] 
+FROM [table] 
+GROUP BY [column];
+
+AGGREGATE FUNCTIONS:
+COUNT(*) - Count records
+SUM(column) - Total values
+AVG(column) - Average values
+MAX(column) / MIN(column) - Extremes
+
+EXAMPLES:
+-- Count employees per department
+SELECT department_id, COUNT(*) as employee_count
+FROM employees
+GROUP BY department_id;
+
+-- Average gravity levels by hour
+SELECT STRFTIME('%H', timestamp) as hour, 
+       AVG(value) as avg_gravity
+FROM system_metrics
+WHERE metric_name = 'Gravity'
+GROUP BY hour
+ORDER BY hour ASC;
+
+SYNTAX RULE: Every column in SELECT must either be in GROUP BY or wrapped in an aggregate function.
+
+:: END TRANSMISSION ::`
     },
     {
         id: 6,
-        title: "The Core Logic",
-        filename: "KERNEL_ACCESS.LOG",
-        content: `:: SUBJECT: ADVANCED FILTERING ::
-:: ACCESS: GRANTED ::
+        title: "EMERGENCY PROTOCOLS :: Quick Reference",
+        filename: "EMERGENCY_CMDS.LOG",
+        content: `:: MANUAL FOR PROTOCOL ANTIGRAVITY ::
+:: CLASSIFICATION: INTERNAL USE ONLY ::
+:: EMERGENCY COMMANDS ::
 
-At the deepest level, queries become recursive. 
-Use subqueries and nested logic to isolate strictly specific processes.
+COMMON OPERATORS:
+= != < > <= >=  (Comparison)
+AND OR NOT      (Logical)
+LIKE            (Pattern matching with % wildcard)
+IN              (Match any value in list)
 
-Master the query, Master the Station.`
+SYSTEM DIAGNOSTICS:
+-- View all available tables
+SELECT name FROM sqlite_master WHERE type='table';
+
+-- Describe table structure
+PRAGMA table_info([table_name]);
+
+-- Count total records
+SELECT COUNT(*) FROM [table_name];
+
+PATTERN MATCHING:
+-- Find names starting with 'A'
+SELECT * FROM employees WHERE name LIKE 'A%';
+
+-- Find names containing 'tech'
+SELECT * FROM employees WHERE name LIKE '%tech%';
+
+REMEMBER: The database doesn't think—you must tell it precisely what you need.
+
+:: MAINTAIN OPERATIONAL SECURITY ::
+:: REPORT ANOMALIES TO STATION COMMAND ::
+:: END TRANSMISSION ::`
     }
 ];
