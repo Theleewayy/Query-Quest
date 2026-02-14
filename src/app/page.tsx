@@ -195,9 +195,15 @@ export default function QueryQuestPage() {
             setQuery("-- Level Complete! System purging cache... \n-- Awaiting next command.");
           }, 1500);
         } else if (currentLevelIndex === LEVELS.length - 1) {
-          setIsMissionComplete(true);
-          // Trigger gravity failure effect
-          setTimeout(() => setGravityFailure(true), 1000);
+          // Final level completed - trigger gravity failure first, then show modal
+          setTimeout(() => {
+            setGravityFailure(true);
+            setToast({
+              message: "WARNING :: GRAVITY SYSTEMS OFFLINE :: STATION ENTERING ZERO-G MODE",
+              type: "info",
+            });
+          }, 500);
+          setTimeout(() => setIsMissionComplete(true), 2500);
         }
       } else {
         // Query executed but results don't match - provide intelligent hint
