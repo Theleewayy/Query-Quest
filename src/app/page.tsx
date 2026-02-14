@@ -144,15 +144,8 @@ export default function QueryQuestPage() {
   };
 
   const handleMissionRestart = () => {
-    setIsMissionComplete(false);
-    setGameStarted(false);
-    setTimer(75);
-    setQuery(INITIAL_SQL);
-    setResult(null);
-    setQueryError(null);
-    setCurrentLevelIndex(0);
-    setMaxUnlockedLevel(0);
-    resetDatabase();
+    // Refresh the entire page for a clean restart
+    window.location.reload();
   };
 
   const handleRun = async () => {
